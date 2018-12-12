@@ -1,30 +1,44 @@
 var express = require("express")
 var bodyParser = require("body-parser")
 var path = require("path")   // for create path string
-var app = express()
 const ModelLoader = require('./models/loader')
-const modelLoader = new ModelLoader()
 // var routes = require("./routes")
 // const router = new (require('./router'))(express.Router)
 
-app.use(bodyParser.urlencoded({
-	extended: true
-}))
-app.use(bodyParser.json()) 
+class Application {
+	constructor(modelLoader) {
+		this.models = {}
+		this.app = express()
+		this.modelLoader = modelLoader
 
-const models = (async function() {
-	if(await modelLoader.connect()) {
-		const models = await modelLoader.load()
-		return models
+		this.app.use(bodyParser.urlencoded({
+			extended: true
+		}))
+		this.app.use(bodyParser.json()) 
 	}
-})()
-// router.route(routes)
-// app.use(router.getRouter())
 
-// initialize server
-var server = app.listen(3000, function(){
-	var host = server.address().address
-	var port = server.address().port
+	async start() {
+		if(await this.modelLoader.connect()) {
+			this.models = await this.modelLoader.load()
+		} else {
+			console.log('Terminate application')
+			return
+		}
 
-	console.log("Listening at http://%s:%s", host, port)
-})
+		console.log(this.models)
+		// initialize server
+		const server = this.app.listen(3000, function(){
+			const host = server.address().address
+			const port = server.address().port
+
+			console.log("Listening at http://%s:%s", host, port)
+		})
+	}
+}
+
+const modelLoader = new ModelLoader()
+const application = new Application(modelLoader)
+application.start()
+
+
+
