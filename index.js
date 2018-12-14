@@ -25,7 +25,7 @@ class Application {
 			return
 		}
 
-		console.log(this.models)
+
 		// initialize server
 		const server = this.app.listen(3000, function(){
 			const host = server.address().address
