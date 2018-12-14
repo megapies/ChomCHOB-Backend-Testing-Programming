@@ -5,11 +5,11 @@ module.exports = [
   {
     method: 'GET',
     path: '/',
-    controller: ctrl.getCurrencies
+    controller: ctrl.getCurrencies.bind(ctrl)
   },
   {
     method: 'POST',
     path: '/',
-    controller: ctrl.createCurrency
+    controller: ctrl.createCurrency.bind(ctrl)
   },
 ]

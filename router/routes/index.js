@@ -5,6 +5,6 @@ module.exports = [
   {
     method: 'POST',
     path: '/login',
-    controller: ctrl.login
+    controller: ctrl.login.bind(ctrl)
   }
 ]

@@ -1,11 +1,20 @@
+const validator = require('controllers/module/validate')
+const ErrorHandler = require('controllers/module/error')
 class CoreController {
   constructor() {
     console.log('core controller')
+    this.errorHandler = new ErrorHandler()
   }
 
   async login(req, res) {
-    console.log('controller login')
-    res.end('hi')
+    try {
+      const { error, value } = validator.validateLogin(req)
+      if (error) throw error
+
+      res.end('hi')
+    } catch(error) {
+      this.errorHandler.handle(error, res)
+    }
   }
 
   async increaseBalance(req, res) {
