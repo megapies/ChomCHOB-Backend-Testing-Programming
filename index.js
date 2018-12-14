@@ -1,8 +1,12 @@
+process.env.NODE_PATH = "./";
+require("module").Module._initPaths();
+
 var express = require("express")
 var bodyParser = require("body-parser")
 var path = require("path")   // for create path string
 const ModelLoader = require('./models')
 const RouterLoader = require('./router/router')
+
 
 // var routes = require("./routes")
 // const router = new (require('./router'))(express.Router)
@@ -29,6 +33,7 @@ class Application {
 		}
 
 		this.routerLoader.load()
+		this.app.use(this.routerLoader.getRouter())
 
 
 		// initialize server
