@@ -1,15 +1,18 @@
 var express = require("express")
 var bodyParser = require("body-parser")
 var path = require("path")   // for create path string
-const ModelLoader = require('./models/loader')
+const ModelLoader = require('./models')
+const RouterLoader = require('./router/router')
+
 // var routes = require("./routes")
 // const router = new (require('./router'))(express.Router)
 
 class Application {
-	constructor(modelLoader) {
+	constructor(modelLoader, routerLoader) {
 		this.models = {}
 		this.app = express()
 		this.modelLoader = modelLoader
+		this.routerLoader = routerLoader
 
 		this.app.use(bodyParser.urlencoded({
 			extended: true
@@ -25,6 +28,8 @@ class Application {
 			return
 		}
 
+		this.routerLoader.load()
+
 
 		// initialize server
 		const server = this.app.listen(3000, function(){
@@ -37,7 +42,8 @@ class Application {
 }
 
 const modelLoader = new ModelLoader()
-const application = new Application(modelLoader)
+const routerLoader = new RouterLoader(express.Router())
+const application = new Application(modelLoader, routerLoader)
 application.start()
 
 

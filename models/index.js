@@ -21,11 +21,10 @@ class ModelLoader {
       }
     })
     this.modelNames = []
-    fs.readdirSync('models').forEach((file) => {
-      if(file.indexOf('.js') > 0 && file != 'loader.js') 
+    fs.readdirSync(__dirname).forEach((file) => {
+      if(file.indexOf('.js') > 0 && file != 'index.js') 
         this.modelNames.push(file)
     })
-    
   }
 
   async connect() {
