@@ -32,6 +32,15 @@ class ErrorHandler{
       }
     }
   }
+
+  createAccessDenie() {
+    return {
+      code: 401,
+      data: {
+        msg: 'Access denie'
+      }
+    }
+  }
 }
 
 module.exports = ErrorHandler

@@ -14,6 +14,11 @@ class AuthManager {
     this.hashIds = new Hashids('SaAe', 6)
   }
 
+  async checkRole(accessToken, target='ADMIN') {
+    const userId = await client.get(accessToken)
+    const user = await this.dbConnector.getUserById({userId})
+    return user.role == target
+  }
   async register({
     username,
     password,

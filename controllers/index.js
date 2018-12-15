@@ -4,10 +4,12 @@ const models = require('models/index.2.js')()
 const dbConnector = require('controllers/module/db')(models)
 
 const AuthManager = require('controllers/manager/auth')
+const CurrencyManager = require('controllers/manager/currency')
 class CoreController {
   constructor() {
     this.errorHandler = new ErrorHandler()
     this.authManager = new AuthManager(dbConnector, this.errorHandler)
+    this.currencyManager = new CurrencyManager(dbConnector, this.errorHandler)
   }
 
   async register(req, res) {
@@ -17,7 +19,7 @@ class CoreController {
       const user = await this.authManager.register(value)
       res.json(user)
     } catch (error) {
-      this.errorHandler.handle(error)
+      this.errorHandler.handle(error, res)
     }
   }
 
@@ -49,7 +51,20 @@ class CoreController {
   }
 
   async createCurrency(req, res) {
+    try {
+      const { error, value } = validator.validateCreateCurrency(req)
+      if(error) throw error
 
+      const isAdmin = await this.authManager.checkRole(value.accessToken, 'ADMIN')
+      if(!isAdmin){
+        throw this.errorHandler.createAccessDenie()
+      }
+      
+      const currency = await this.currencyManager.createCurrency(value)
+      res.json(currency)
+    } catch (error) {
+      this.errorHandler.handle(error, res)
+    }
   }
 
   async changeExchangeRate(req, res) {

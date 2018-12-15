@@ -7,8 +7,35 @@ function init(models) {
         }
       }) 
     },
+    getUserById: async ({userId}) => {
+      return models.User.findOne({
+        where: {
+          id: userId
+        }
+      })
+    },
+    getAllUserIds: async () => {
+      return await models.User.findAll({
+        attributes: ['id'],
+        where: {
+          role: 'USER'
+        }
+      })
+    },
+    getAllAdminIds: async () => {
+      return await models.User.findAll({
+        attributes: ['id'],
+        where: {
+          role: 'ADMIN'
+        }
+      })
+    },
     getUserByPublicId: async ({publicId}) => {
-
+      return await models.User.findOne({
+        where: {
+          publicId: publicId
+        }
+      })
     },
     registerUser: async ({
       username,
