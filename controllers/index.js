@@ -6,7 +6,6 @@ const dbConnector = require('controllers/module/db')(models)
 const AuthManager = require('controllers/manager/auth')
 class CoreController {
   constructor() {
-    console.log('core controller')
     this.errorHandler = new ErrorHandler()
     this.authManager = new AuthManager(dbConnector, this.errorHandler)
   }
