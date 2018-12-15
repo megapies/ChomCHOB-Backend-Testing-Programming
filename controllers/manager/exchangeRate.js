@@ -17,6 +17,17 @@ class ExchangeRateManager {
 
     return exchangeRate
   }
+
+  async getExchangeRate({
+    from,
+    to
+  }) {
+    const exchangeRate = await this.dbConnector.getExchangeRate({
+      from,
+      to
+    })
+    return exchangeRate
+  }
 }
 
 module.exports = ExchangeRateManager

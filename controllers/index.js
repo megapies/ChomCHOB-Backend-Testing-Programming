@@ -87,7 +87,16 @@ class CoreController {
   }
 
   async getExchangeRate(req, res) {
-
+    try {
+      const { error, value } = validator.validateGetExchangeRate(req)
+      if(error) throw error
+      
+      const exchangeRate = await this.exchangeRateManager.getExchangeRate(value)
+      res.json(exchangeRate)
+      
+    } catch (error) {
+      
+    }
   }
 }
 
