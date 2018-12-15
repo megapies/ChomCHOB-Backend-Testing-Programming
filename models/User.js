@@ -22,6 +22,10 @@ module.exports = (sequelize, DataType) => {
     publicId: {
       type: DataType.STRING,
       unique: true
+    },
+    role: {
+      type: DataType.ENUM('USER', 'ADMIN'),
+      defaultValue: 'USER',
     }
   })
   User.associate = function(models) {
