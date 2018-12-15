@@ -5,11 +5,13 @@ const dbConnector = require('controllers/module/db')(models)
 
 const AuthManager = require('controllers/manager/auth')
 const CurrencyManager = require('controllers/manager/currency')
+const ExchangeManager = require('controllers/manager/exchangeRate')
 class CoreController {
   constructor() {
     this.errorHandler = new ErrorHandler()
     this.authManager = new AuthManager(dbConnector, this.errorHandler)
     this.currencyManager = new CurrencyManager(dbConnector, this.errorHandler)
+    this.exchangeRateManager = new ExchangeManager(dbConnector, this.errorHandler)
   }
 
   async register(req, res) {
@@ -68,7 +70,20 @@ class CoreController {
   }
 
   async changeExchangeRate(req, res) {
+    try {
+      const { error, value } = validator.validateModifyExchangeRate(req)
+      if(error) throw error
 
+      const isAdmin = this.authManager.checkRole(value.accessToken, 'ADMIN')
+      if(!isAdmin) {
+        throw this.errorHandler.createAccessDenie()
+      }
+
+      const exchangeRate = await this.exchangeRateManager.modifyExchangeRate(value)
+      res.json(exchangeRate)
+    } catch (error) {
+      this.errorHandler.handle(error)
+    }
   }
 
   async getExchangeRate(req, res) {

@@ -58,6 +58,7 @@ module.exports = (models) => {
       })
       exhangeRate.rate = rate
       await exhangeRate.save()
+      return exhangeRate
     }
   }
 }
