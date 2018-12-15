@@ -10,6 +10,22 @@ module.exports = (sequelize, DataType) => {
       unique: true,
       allowNull: false,
     },
+    sender: {
+      type: DataType.INTEGER,
+      allowNull: false,
+    },
+    receiver: {
+      type: DataType.INTEGER,
+      allowNull: false,
+    },
+    origin_currency: {
+      type: DataType.INTEGER,
+      allowNull: false,
+    },
+    new_currency: {
+      type: DataType.INTEGER,
+      allowNull: false,
+    },
     exhangeRate: {
       type: DataType.DOUBLE,
     },
@@ -20,10 +36,10 @@ module.exports = (sequelize, DataType) => {
   })
 
   Transaction.associate = function(models) {
-    models.Transaction.belongsTo(models.User, {as: 'sender'})
-    models.Transaction.belongsTo(models.User, {as: 'receiver'})
-    models.Transaction.belongsTo(models.Currency, {as: 'origin_currency'})
-    models.Transaction.belongsTo(models.Currency, {as: 'new_currency'})
+    models.Transaction.belongsTo(models.User, {foreignKey : 'sender'})
+    models.Transaction.belongsTo(models.User, {foreignKey: 'receiver'})
+    models.Transaction.belongsTo(models.Currency, {foreignKey: 'origin_currency'})
+    models.Transaction.belongsTo(models.Currency, {foreignKey: 'new_currency'})
   }
 
   return Transaction

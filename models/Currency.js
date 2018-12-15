@@ -8,15 +8,16 @@ module.exports = (sequelize, DataType) => {
     name: {
       type: DataType.STRING,
       allowNull: false,
+      unique: true,
     }
   })
 
   Currency.associate = function(models) {
-    models.Currency.hasMany(models.Wallet)
-    models.Currency.hasMany(models.ExchangeRate, {as: 'from'})
-    models.Currency.hasMany(models.ExchangeRate, {as: 'to'})
-    models.Currency.hasMany(models.Transaction, {as: 'origin_currency'})
-    models.Currency.hasMany(models.Transaction, {as: 'new_currency'})
+    models.Currency.hasMany(models.Wallet, {foreignKey: 'currency_id'})
+    models.Currency.hasMany(models.ExchangeRate, {as: 'from', foreignKey: 'from'})
+    models.Currency.hasMany(models.ExchangeRate, {as: 'to', foreignKey: 'to'})
+    models.Currency.hasMany(models.Transaction, {as: 'origin', foreignKey: 'origin_currency'})
+    models.Currency.hasMany(models.Transaction, {as: 'new', foreignKey: 'new_currency'})
   }
   return Currency
 }

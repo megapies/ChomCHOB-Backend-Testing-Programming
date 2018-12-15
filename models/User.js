@@ -29,9 +29,9 @@ module.exports = (sequelize, DataType) => {
     }
   })
   User.associate = function(models) {
-    models.User.hasMany(models.Wallet)
-    models.User.hasMany(models.Transaction, {as: 'sender'})
-    models.User.hasMany(models.Transaction, {as: 'receiver'})
+    models.User.hasMany(models.Wallet, { foreignKey: 'user_id' })
+    models.User.hasMany(models.Transaction, { as:'sender', foreignKey: 'sender' })
+    models.User.hasMany(models.Transaction, { as:'receiver', foreignKey: 'receiver'})
   }
 
   return User

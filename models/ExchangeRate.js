@@ -1,9 +1,14 @@
 module.exports = (sequelize, DataType) => {
   const ExchangeRate = sequelize.define('ExchangeRate', {
-    id: {
-      type: DataType.INTEGER,
+    from: {
       primaryKey: true,
-      autoIncrement: true,
+      type: DataType.INTEGER,
+      allowNull: false,
+    },
+    to: {
+      primaryKey: true,
+      type: DataType.INTEGER,
+      allowNull: false,
     },
     rate: {
       type: DataType.DOUBLE,
@@ -12,8 +17,8 @@ module.exports = (sequelize, DataType) => {
   })
 
   ExchangeRate.associate = function(models) {
-    models.ExchangeRate.belongsTo(models.Currency, {as: 'from'})
-    models.ExchangeRate.belongsTo(models.Currency, {as: 'to'})
+    models.ExchangeRate.belongsTo(models.Currency, {foreignKey: 'from'})
+    models.ExchangeRate.belongsTo(models.Currency, {foreignKey: 'to'})
   }
 
   return ExchangeRate
