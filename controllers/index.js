@@ -49,7 +49,15 @@ class CoreController {
   }
 
   async getCurrencies(req, res) {
-    
+    try {
+      const { error, value } = validator.validateGetAllCurrencies(req)
+      if(error) throw error
+
+      const currencies = await this.currencyManager.getAllCurrencies()
+      res.json(currencies)
+    } catch (error) {
+      this.errorHandler.handle(error)
+    }
   }
 
   async createCurrency(req, res) {

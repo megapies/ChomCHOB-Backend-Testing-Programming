@@ -15,5 +15,9 @@ module.exports = (models) => {
       })
       return currencyIds
     },
+    getAllCurrencies: async () => {
+      const currencies = await models.Currency.findAll()
+      return currencies
+    }
   }
 }

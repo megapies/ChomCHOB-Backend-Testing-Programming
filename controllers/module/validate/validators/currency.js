@@ -13,7 +13,7 @@ module.exports = {
 
     return Joi.validate(params, schema)
   },
-  validateGetAllCurrency: (req) => {
+  validateGetAllCurrencies: (req) => {
     const params = {
       accessToken: req.get('access-token')
     }

@@ -4,6 +4,10 @@ class CurrencyManager {
     this.errorHandler = errorHandler
   }
 
+  async getAllCurrencies() {
+    const currencies = await this.dbConnector.getAllCurrencies()
+    return currencies
+  }
   async createCurrency({
     currencyName
   }) {
