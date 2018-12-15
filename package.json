@@ -18,8 +18,10 @@
   },
   "homepage": "https://github.com/megapies/ChomCHOB-Backend-Testing-Programming#readme",
   "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
+    "hashids": "^1.2.2",
     "joi": "^14.3.0",
     "mysql2": "^1.6.4",
     "sequelize": "^4.41.2"

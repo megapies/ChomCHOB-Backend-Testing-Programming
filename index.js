@@ -6,17 +6,18 @@ var bodyParser = require("body-parser")
 var path = require("path")   // for create path string
 const ModelLoader = require('./models')
 const RouterLoader = require('./router/router')
+const CoreController = require('controllers')
 
 
 // var routes = require("./routes")
 // const router = new (require('./router'))(express.Router)
 
 class Application {
-	constructor(modelLoader, routerLoader) {
+	constructor(coreController, routerLoader) {
 		this.models = {}
 		this.app = express()
-		this.modelLoader = modelLoader
 		this.routerLoader = routerLoader
+		this.coreController = coreController
 
 		this.app.use(bodyParser.urlencoded({
 			extended: true
@@ -25,16 +26,9 @@ class Application {
 	}
 
 	async start() {
-		if(await this.modelLoader.connect()) {
-			this.models = await this.modelLoader.load()
-		} else {
-			console.log('Terminate application')
-			return
-		}
 
 		this.routerLoader.load()
 		this.app.use(this.routerLoader.getRouter())
-
 
 		// initialize server
 		const server = this.app.listen(3000, function(){
@@ -46,9 +40,9 @@ class Application {
 	}
 }
 
-const modelLoader = new ModelLoader()
 const routerLoader = new RouterLoader(express.Router())
-const application = new Application(modelLoader, routerLoader)
+const coreController = CoreController.instance
+const application = new Application(coreController, routerLoader)
 application.start()
 
 
