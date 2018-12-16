@@ -1,12 +1,13 @@
 const validator = require('controllers/module/validate')
 const ErrorHandler = require('controllers/module/error')
-const models = require('models/index.2.js')()
-const dbConnector = require('controllers/module/db')(models)
+const { models, sequelize } = require('models/index.2.js')()
+const dbConnector = require('controllers/module/db')(models, sequelize)
 
 const AuthManager = require('controllers/manager/auth')
 const CurrencyManager = require('controllers/manager/currency')
 const ExchangeManager = require('controllers/manager/exchangeRate')
 const WalletManager = require('controllers/manager/wallet')
+const TransactionManager = require('controllers/manager/transaction')
 
 class CoreController {
   constructor() {
@@ -15,6 +16,7 @@ class CoreController {
     this.currencyManager = new CurrencyManager(dbConnector, this.errorHandler)
     this.exchangeRateManager = new ExchangeManager(dbConnector, this.errorHandler)
     this.walletManager = new WalletManager(dbConnector, this.errorHandler)
+    this.transactionManager = new TransactionManager(dbConnector, this.errorHandler)
   }
 
   async register(req, res) {
@@ -158,6 +160,22 @@ class CoreController {
       
     } catch (error) {
       this.errorHandler.handle(error, res)
+    }
+  }
+
+  async transfer(req, res) {
+    try {
+      const { error, value } = validator.validateTransfer(req)
+      if(error) throw error
+
+      const sender = await this.authManager.getUserByAccessToken({accessToken:value.accessToken})
+      if(sender.role == 'ADMIN')
+        throw this.errorHandler.createAccessDenie()
+      value.senderId = sender.id
+      const transaction = await this.transactionManager.transfer(value)
+      res.json(transaction)
+    } catch (error) {
+      this.errorHandler.handle(error, res)      
     }
   }
 }

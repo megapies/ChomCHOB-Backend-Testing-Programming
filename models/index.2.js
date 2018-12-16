@@ -44,7 +44,10 @@ function init({
     models[m].sync({force: false})
   }
 
-  return models
+  return {
+    models,
+    sequelize
+  }
 }
 
 module.exports = init

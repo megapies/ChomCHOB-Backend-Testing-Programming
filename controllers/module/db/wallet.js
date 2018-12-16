@@ -1,5 +1,17 @@
 module.exports = (models) => {
   return {
+    getWalletByUserId: async ({
+      userId,
+      currencyId,
+    }) => {
+      const wallet = await models.Wallet.findOne({
+        where: {
+          user_id: userId,
+          currency_id: currencyId
+        }
+      })
+      return wallet
+    },
     getWalletsByUserId: async ({
       userId
     }) => {
