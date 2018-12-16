@@ -16,4 +16,9 @@ module.exports = [
     path: '/',
     controller: ctrl.getBalance.bind(ctrl)
   },
+  {
+    method: 'GET',
+    path: '/user/:user_id',
+    controller: ctrl.getBalanceByAdmin.bind(ctrl)
+  }
 ]

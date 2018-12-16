@@ -14,6 +14,7 @@ class CurrencyManager {
     const currency = await this.dbConnector.createCurrency({
       currencyName
     })
+    
     const userIds = await this.dbConnector.getAllUserIds()
     for(let i in userIds) {
       const userId = userIds[i]
@@ -32,14 +33,15 @@ class CurrencyManager {
         rate: 1.0
       })
 
-      if(id == currency.id) return
+      if(id == currency.id)
+        continue
       await this.dbConnector.createExchangeRate({
         from:id,
         to: currency.id,
         rate: 1.0
       })
     }
-
+    
     return currency
   }
   

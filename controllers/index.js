@@ -72,7 +72,33 @@ class CoreController {
   }
 
   async getBalance(req, res) {
+    try {
+      const { error, value } = validator.validateGetBalance(req)
+      if(error) throw error
 
+      const user = await this.authManager.getUserByAccessToken(value)
+      const wallets = await this.walletManager.getBalance({
+        userId: user.id
+      })
+      res.json(wallets)
+    } catch (error) {
+      this.errorHandler.handle(error, res)
+    }
+  }
+
+  async getBalanceByAdmin(req, res) {
+    try {
+      const { error, value } = validator.validateGetBalanceByAdmin(req)
+      if(error) throw error
+
+      const isAdmin = await this.authManager.checkRole(value.accessToken, 'ADMIN')
+      if(!isAdmin) 
+        throw this.errorHandler.createAccessDenie()
+      const wallets = await this.walletManager.getBalance(value)
+      res.json(wallets)
+    } catch (error) {
+      this.errorHandler.handle(error, res)
+    }
   }
 
   async getCurrencies(req, res) {
@@ -98,6 +124,7 @@ class CoreController {
       }
       
       const currency = await this.currencyManager.createCurrency(value)
+      console.log('currency', currency)
       res.json(currency)
     } catch (error) {
       this.errorHandler.handle(error, res)
@@ -117,7 +144,7 @@ class CoreController {
       const exchangeRate = await this.exchangeRateManager.modifyExchangeRate(value)
       res.json(exchangeRate)
     } catch (error) {
-      this.errorHandler.handle(error)
+      this.errorHandler.handle(error, res)
     }
   }
 
@@ -130,7 +157,7 @@ class CoreController {
       res.json(exchangeRate)
       
     } catch (error) {
-      
+      this.errorHandler.handle(error, res)
     }
   }
 }

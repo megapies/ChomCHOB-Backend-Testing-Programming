@@ -32,5 +32,25 @@ module.exports = {
     }
 
     return Joi.validate(params, schema)
+  },
+  validateGetBalance: (req) => {
+    const params = {
+      accessToken: req.get('access-token')
+    }
+    const schema = {
+      accessToken: Joi.string().required()
+    }
+    return Joi.validate(params, schema)
+  },
+  validateGetBalanceByAdmin: (req) => {
+    const params = {
+      accessToken: req.get('access-token'),
+      userId: req.params.user_id
+    }
+    const schema = {
+      accessToken: Joi.string().required(),
+      userId: Joi.number().integer().required(),
+    }
+    return Joi.validate(params, schema)
   }
 }

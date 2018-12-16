@@ -19,6 +19,11 @@ class AuthManager {
     const user = await this.dbConnector.getUserById({userId})
     return user.role == target
   }
+  async getUserByAccessToken({ accessToken }) {
+    const userId = await client.get(accessToken)
+    const user = await this.dbConnector.getUserById({ userId })
+    return user
+  }
   async register({
     username,
     password,

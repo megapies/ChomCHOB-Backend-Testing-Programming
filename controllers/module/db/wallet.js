@@ -5,8 +5,13 @@ module.exports = (models) => {
     }) => {
       const wallets = await models.Wallet.findAll({
         where: {
-          userId: userId
-        }
+          user_id: userId
+        },
+        include: [
+          {
+            model: models.Currency
+          }
+        ]
       })
       return wallets
     },
@@ -14,13 +19,11 @@ module.exports = (models) => {
       userId,
       currencyId,
     }) => {
-      console.log('create wallet', userId, currencyId)
       const wallet = models.Wallet.build({
         user_id: userId,
         currency_id: currencyId,
         balance: 0
       })
-      console.log(wallet)
       await wallet.save()
       return wallet
     },
