@@ -6,12 +6,15 @@ const dbConnector = require('controllers/module/db')(models)
 const AuthManager = require('controllers/manager/auth')
 const CurrencyManager = require('controllers/manager/currency')
 const ExchangeManager = require('controllers/manager/exchangeRate')
+const WalletManager = require('controllers/manager/wallet')
+
 class CoreController {
   constructor() {
     this.errorHandler = new ErrorHandler()
     this.authManager = new AuthManager(dbConnector, this.errorHandler)
     this.currencyManager = new CurrencyManager(dbConnector, this.errorHandler)
     this.exchangeRateManager = new ExchangeManager(dbConnector, this.errorHandler)
+    this.walletManager = new WalletManager(dbConnector, this.errorHandler)
   }
 
   async register(req, res) {
@@ -37,11 +40,35 @@ class CoreController {
   }
 
   async increaseBalance(req, res) {
-
+    try {
+      const { error, value } = validator.validateIncreaseWallet(req)
+      if (error) throw error
+      
+      const isAdmin = await this.authManager.checkRole(value.accessToken, 'ADMIN')
+      if (!isAdmin)
+        throw this.errorHandler.createAccessDenie()
+      
+      const wallet = await this.walletManager.increaseWallet(value)
+      res.json(wallet)
+    } catch (error) {
+      this.errorHandler.handle(error, res)
+    }
   }
 
   async decreaseBalance(req, res) {
-
+    try {
+      const { error, value } = validator.validateDecreaseWallet(req)
+      if (error) throw error
+      
+      const isAdmin = await this.authManager.checkRole(value.accessToken, 'ADMIN')
+      if (!isAdmin)
+        throw this.errorHandler.createAccessDenie()
+      
+      const wallet = await this.walletManager.decreaseWallet(value)
+      res.json(wallet)
+    } catch (error) {
+      this.errorHandler.handle(error, res)
+    }
   }
 
   async getBalance(req, res) {
