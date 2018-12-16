@@ -2,64 +2,52 @@ const Sequelize = require('sequelize')
 const fs = require('fs')
 const path = require('path')
 
-class ModelLoader {
-  constructor(dbName='cc_backend_test_programming',
-              username='root',
-              password='',
-              host='localhost',
-              )
-  {
-    this.sequelize = new Sequelize(dbName, username, password, {
-      host: host,
-      dialect: 'mysql',
-      operatorsAliases: false,
-      logging: false,
-      pool: {
-        max: 5,
-        acquire: 30000,
-        idle: 10000
-      }
-    })
-    this.modelNames = []
-    fs.readdirSync(__dirname).forEach((file) => {
-      if(file.indexOf('.js') > 0 && file != 'index.js') 
-        this.modelNames.push(file)
-    })
-  }
-
-  async connect() {
-    try {
-      const res = await this.sequelize.authenticate()
-      console.log('Connect DB success')
-      return true
-    } catch (e) {
-      console.log('Connect DB fail', e)
-      return false
+function init({
+  dbName,
+  username,
+  password,
+  host
+} = {
+  dbName:'cc_backend_test_programming',
+  username:'root',
+  password:'',
+  host:'localhost',
+}) {
+  const sequelize = new Sequelize(dbName, username, password, {
+    host: host,
+    dialect: 'mysql',
+    operatorsAliases: false,
+    logging: false,
+    pool: {
+      max: 5,
+      acquire: 30000,
+      idle: 10000
     }
-  }
-
-  async load() {
-    const models = {}
-    for(let i in this.modelNames) {
-      const model = this.sequelize.import(`./${this.modelNames[i]}`)
+  })
+  const modelNames = []
+  const models = {}
+  fs.readdirSync(__dirname).forEach((file) => {
+    if(file.indexOf('.js') > 0 && file != 'index.js' && file != 'index.2.js') 
+      modelNames.push(file)
+  })
+  
+  modelNames.forEach((file) => {
+    const model = sequelize.import(`./${file}`)
       models[model.name] = model
-    }
+  })
+  
+  for(let m in models) {
+    models[m].associate(models)
+  }
 
-    for(let m in models) {
-      models[m].associate(models)
-    }
+  for(let m in models) {
+    models[m].sync({force: false})
+  }
 
-    for(let m in models) {
-      const model = models[m]
-      try {
-        await model.sync({force: false})
-      } catch (e) {
-        console.log(`Sync model ${m} fail`, e);
-      }
-    }
-    
-    return models
+  return {
+    models,
+    sequelize
   }
 }
 
-module.exports = ModelLoader
+module.exports = init

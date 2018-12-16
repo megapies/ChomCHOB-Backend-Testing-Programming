@@ -19,7 +19,8 @@ class TransactionManager {
       userId: senderId,
       currencyId: originCurrencyId
     })
-    // ! TODO: check balance
+    if (senderWallet.balance < amount)
+      throw this.errorHandler.createInsufficient()
     const exchangeRate = await this.dbConnector.getExchangeRate({
       from: originCurrencyId,
       to: newCurrencyId

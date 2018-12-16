@@ -1,6 +1,6 @@
 const validator = require('controllers/module/validate')
 const ErrorHandler = require('controllers/module/error')
-const { models, sequelize } = require('models/index.2.js')()
+const { models, sequelize } = require('models/index.js')()
 const dbConnector = require('controllers/module/db')(models, sequelize)
 
 const AuthManager = require('controllers/manager/auth')
