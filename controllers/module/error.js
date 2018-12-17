@@ -4,7 +4,7 @@ class ErrorHandler{
   }
 
   handle(error, res) {
-    console.log(error)
+    // console.log(error)
     if(error.isJoi) {
       // joi error
       res.status(403).json({

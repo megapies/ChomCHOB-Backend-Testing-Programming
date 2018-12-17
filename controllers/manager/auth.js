@@ -40,7 +40,10 @@ class AuthManager {
       firstName,
       lastName,
     }, publicIdCreator)
-    return user
+    user.password = undefined
+    const userP = user.get({plain:true})
+    userP.id = undefined
+    return userP
   }
 
   async login({
@@ -57,10 +60,11 @@ class AuthManager {
       const accessToken = uuidv4()
       await client.set(accessToken, `${user.id}`)
 
-      user.password = undefined
-      user.id = undefined
+      const userP = user.get({plain: true})
+      userP.password = undefined
+      userP.id = undefined
       return {
-        user,
+        userP,
         accessToken
       }
     }
